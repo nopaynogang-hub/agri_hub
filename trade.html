@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Platform - AgriSolutions Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+   
+
+       
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #1e5631;
+            cursor: pointer;
+        }
+
+        .page-header {
+            background: linear-gradient(rgba(30,86,49,0.9), rgba(30,86,49,0.9)), 
+                        url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 40px;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        .trade-dashboard {
+            padding: 40px;
+            background: #f8f9fa;
+        }
+
+        .trade-tabs {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 15px;
+        }
+
+        .tab-btn {
+            padding: 12px 30px;
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .tab-btn.active {
+            color: #1e5631;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -17px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #1e5631;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .buy-sell-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .order-card h3 {
+            color: #1e5631;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ffd700;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: #1e5631;
+            outline: none;
+        }
+
+        .price-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .price-display .label {
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .price-display .amount {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e5631;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 15px;
+            background: #1e5631;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #2d773d;
+        }
+
+        .marketplace-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .product-image {
+            height: 200px;
+            background: #e8f5e9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #1e5631;
+        }
+
+        .product-details {
+            padding: 25px;
+        }
+
+        .product-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .product-title h3 {
+            color: #1e5631;
+            font-size: 1.3rem;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e5631;
+        }
+
+        .seller-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .seller-info i {
+            color: #ffd700;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-outline {
+            flex: 1;
+            padding: 12px;
+            background: transparent;
+            border: 2px solid #1e5631;
+            color: #1e5631;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #1e5631;
+            color: white;
+        }
+
+        .btn-filled {
+            flex: 1;
+            padding: 12px;
+            background: #ffd700;
+            border: none;
+            color: #1e5631;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-filled:hover {
+            background: #e6c200;
+        }
+
+        .export-opportunities {
+            padding: 40px;
+            background: white;
+        }
+
+        .opportunities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .opportunity-card {
+            background: linear-gradient(135deg, #1e5631, #2d773d);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .opportunity-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(45deg);
+        }
+
+        .opportunity-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .opportunity-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .opportunity-content ul {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .opportunity-content li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .opportunity-content li:before {
+            content: '→';
+            margin-right: 10px;
+            color: #ffd700;
+        }
+
+        .trade-leads {
+            padding: 40px;
+            background: #f8f9fa;
+        }
+
+        .leads-table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 30px;
+            overflow-x: auto;
+        }
+
+        .leads-table table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        .leads-table th {
+            background: #1e5631;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .leads-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .leads-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .badge-urgent {
+            background: #ffd700;
+            color: #1e5631;
+        }
+
+        .badge-new {
+            background: #28a745;
+            color: white;
+        }
+
+        .main-footer {
+            background: #1e5631;
+            color: white;
+            padding: 60px 40px 30px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h3 {
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-col a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+        }
+
+        .footer-col a:hover {
+            color: #ffd700;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: #ffd700;
+            color: #1e5631;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.6);
+        }
+
+        @media (max-width: 992px) {
+            .side-nav {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            .side-nav.active {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .buy-sell-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 60px 20px;
+            }
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            .trade-dashboard, .export-opportunities, .trade-leads {
+                padding: 20px;
+            }
+            .trade-tabs {
+                flex-wrap: wrap;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        /* Header Styles */
+.header {
+    background: linear-gradient(135deg, #1e5631 0%, #4a7c59 100%);
+    color: white;
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+
+.main-nav ul {
+    display: flex;
+    list-style: none;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.main-nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 300px;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.main-nav a:hover, .main-nav a.active {
+    
+    color: #ffd700;
+}
+
+    </style>
+</head>
+
+  
+       
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+            
+                
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <nav class="main-nav" id="mainNav">
+                    <ul>
+                        <li><a href="index.html" class="active"><i class="fas fa-home"></i> Home</a></li>
+                       
+                           <li><a href="resources.html"><i class="fas fa-book"></i> Resources</a></li>
+                        <li><a href="market.html"><i class="fas fa-chart-line"></i> Market</a></li>
+                        <li><a href="weather.html"><i class="fas fa-cloud-sun"></i> Weather</a></li>
+                        <li><a href="order.html" class="btn-order"><i class="fas fa-shopping-cart"></i> Place Order</a></li>
+                    </ul>
+                </nav>
+                </header>
+
+ <body>
+
+        <section class="page-header">
+            <h1>Global Trade Platform</h1>
+            <p>Connect with verified buyers and sellers worldwide. Trade agricultural products securely.</p>
+        </section>
+
+        <section class="trade-dashboard">
+            <div class="trade-tabs">
+                <button class="tab-btn active" onclick="switchTab('buy')">Buy</button>
+                <button class="tab-btn" onclick="switchTab('sell')">Sell</button>
+                <button class="tab-btn" onclick="switchTab('marketplace')">Marketplace</button>
+                <button class="tab-btn" onclick="switchTab('leads')">Trade Leads</button>
+            </div>
+
+            <div class="tab-content active" id="buy-tab">
+                <div class="buy-sell-grid">
+                    <div class="order-card fade-in">
+                        <h3>Place Buy Order</h3>
+                        <div class="form-group">
+                            <label>Product Type</label>
+                            <select>
+                                <option>Select product</option>
+                                <option>Maize</option>
+                                <option>Rice</option>
+                                <option>Coffee</option>
+                                <option>Cashew Nuts</option>
+                                <option>Beans</option>
+                                <option>Vegetables</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantity (metric tons)</label>
+                            <input type="number" min="1" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Target Price (USD/ton)</label>
+                            <input type="number" value="280">
+                        </div>
+                        <div class="form-group">
+                            <label>Country of Origin</label>
+                            <select>
+                                <option>Tanzania</option>
+                                <option>Kenya</option>
+                                <option>Uganda</option>
+                                <option>Rwanda</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Quality Requirements</label>
+                            <textarea rows="3" placeholder="Specify quality standards..."></textarea>
+                        </div>
+                        <button class="btn-primary">Post Buy Requirement</button>
+                    </div>
+
+                    <div class="order-card fade-in">
+                        <h3>Market Price Calculator</h3>
+                        <div class="price-display">
+                            <div class="label">Current Market Price</div>
+                            <div class="amount">$280/ton</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Your Bid Price</label>
+                            <input type="number" value="275">
+                        </div>
+                        <div class="form-group">
+                            <label>Quantity</label>
+                            <input type="number" value="50">
+                        </div>
+                        <div class="price-display">
+                            <div class="label">Total Order Value</div>
+                            <div class="amount">$13,750</div>
+                        </div>
+                        <p style="color: #28a745; margin-top: 10px;">✓ Estimated savings: $250</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="sell-tab">
+                <div class="buy-sell-grid">
+                    <div class="order-card fade-in">
+                        <h3>List Product for Sale</h3>
+                        <div class="form-group">
+                            <label>Product Type</label>
+                            <select>
+                                <option>Select product</option>
+                                <option>Maize</option>
+                                <option>Rice</option>
+                                <option>Coffee</option>
+                                <option>Cashew Nuts</option>
+                                <option>Beans</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Available Quantity (tons)</label>
+                            <input type="number" min="1" value="10">
+                        </div>
+                        <div class="form-group">
+                            <label>Asking Price (USD/ton)</label>
+                            <input type="number" value="285">
+                        </div>
+                        <div class="form-group">
+                            <label>Quality Grade</label>
+                            <select>
+                                <option>Premium</option>
+                                <option>Grade A</option>
+                                <option>Grade B</option>
+                                <option>Organic Certified</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Available From</label>
+                            <input type="date">
+                        </div>
+                        <button class="btn-primary">List Product</button>
+                    </div>
+
+                    <div class="order-card fade-in">
+                        <h3>Your Current Listings</h3>
+                        <div style="margin: 20px 0;">
+                            <p>No active listings</p>
+                        </div>
+                        <h3>Recent Offers</h3>
+                        <div style="margin: 20px 0; color: #666;">
+                            <p>You have 3 pending offers</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="marketplace-tab">
+                <div class="marketplace-grid">
+                    <div class="product-card fade-in">
+                        <div class="product-image">
+                            <i class="fas fa-corn"></i>
+                        </div>
+                        <div class="product-details">
+                            <div class="product-title">
+                                <h3>Premium Maize</h3>
+                                <span class="product-price">$285/ton</span>
+                            </div>
+                            <div class="seller-info">
+                                <i class="fas fa-user"></i>
+                                <span>Kilimanjaro Farmers Co-op</span>
+                                <i class="fas fa-star" style="color: #ffd700; margin-left: auto;"></i>
+                                <span>4.8</span>
+                            </div>
+                            <p>High-quality maize, Grade A, 500 tons available. Ready for export.</p>
+                            <div class="product-actions">
+                                <button class="btn-outline">Contact</button>
+                                <button class="btn-filled">Make Offer</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card fade-in">
+                        <div class="product-image">
+                            <i class="fas fa-mug-hot"></i>
+                        </div>
+                        <div class="product-details">
+                            <div class="product-title">
+                                <h3>Arabica Coffee</h3>
+                                <span class="product-price">$3,200/ton</span>
+                            </div>
+                            <div class="seller-info">
+                                <i class="fas fa-user"></i>
+                                <span>Mbeya Coffee Estate</span>
+                                <i class="fas fa-star" style="color: #ffd700; margin-left: auto;"></i>
+                                <span>4.9</span>
+                            </div>
+                            <p>Organic certified Arabica coffee, specialty grade. Limited quantity.</p>
+                            <div class="product-actions">
+                                <button class="btn-outline">Contact</button>
+                                <button class="btn-filled">Make Offer</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-card fade-in">
+                        <div class="product-image">
+                            <i class="fas fa-nut"></i>
+                        </div>
+                        <div class="product-details">
+                            <div class="product-title">
+                                <h3>Cashew Nuts</h3>
+                                <span class="product-price">$1,950/ton</span>
+                            </div>
+                            <div class="seller-info">
+                                <i class="fas fa-user"></i>
+                                <span>Mtwara Cashew Exporters</span>
+                                <i class="fas fa-star" style="color: #ffd700; margin-left: auto;"></i>
+                                <span>4.7</span>
+                            </div>
+                            <p>Premium quality raw cashew nuts, ready for processing. 200 tons available.</p>
+                            <div class="product-actions">
+                                <button class="btn-outline">Contact</button>
+                                <button class="btn-filled">Make Offer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="leads-tab">
+                <div class="leads-table fade-in">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Type</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Location</th>
+                                <th>Posted</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Maize</td>
+                                <td><span class="badge badge-urgent">BUY</span></td>
+                                <td>500 tons</td>
+                                <td>$290/ton</td>
+                                <td>Kenya</td>
+                                <td>2 hours ago</td>
+                                <td><button class="btn-outline" style="padding: 5px 15px;">Respond</button></td>
+                            </tr>
+                            <tr>
+                                <td>Coffee</td>
+                                <td><span class="badge badge-new">SELL</span></td>
+                                <td>50 tons</td>
+                                <td>$3,150/ton</td>
+                                <td>Tanzania</td>
+                                <td>5 hours ago</td>
+                                <td><button class="btn-outline" style="padding: 5px 15px;">Respond</button></td>
+                            </tr>
+                            <tr>
+                                <td>Cashew Nuts</td>
+                                <td><span class="badge badge-urgent">BUY</span></td>
+                                <td>200 tons</td>
+                                <td>$2,000/ton</td>
+                                <td>India</td>
+                                <td>1 day ago</td>
+                                <td><button class="btn-outline" style="padding: 5px 15px;">Respond</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="export-opportunities">
+            <h2 style="color: #1e5631; margin-bottom: 20px;">Featured Export Opportunities</h2>
+            <div class="opportunities-grid">
+                <div class="opportunity-card fade-in">
+                    <div class="opportunity-content">
+                        <h3>European Union Market</h3>
+                        <ul>
+                            <li>Organic Coffee: €4,850/ton</li>
+                            <li>Cocoa Beans: €2,350/ton</li>
+                            <li>Spices: €3,200/ton</li>
+                            <li>Fresh Vegetables: Seasonal</li>
+                        </ul>
+                        <button class="btn-filled" style="margin-top: 20px;">View Requirements</button>
+                    </div>
+                </div>
+                <div class="opportunity-card fade-in">
+                    <div class="opportunity-content">
+                        <h3>Asian Markets</h3>
+                        <ul>
+                            <li>Sesame Seeds: $1,850/ton</li>
+                            <li>Cashew Nuts: $1,950/ton</li>
+                            <li>Pulses: $720/ton</li>
+                            <li>Rice: $580/ton</li>
+                        </ul>
+                        <button class="btn-filled" style="margin-top: 20px;">View Requirements</button>
+                    </div>
+                </div>
+                <div class="opportunity-card fade-in">
+                    <div class="opportunity-content">
+                        <h3>American Markets</h3>
+                        <ul>
+                            <li>Specialty Coffee: $3,250/ton</li>
+                            <li>Vanilla: $12,500/ton</li>
+                            <li>Shea Butter: $1,280/ton</li>
+                            <li>Quinoa: $2,150/ton</li>
+                        </ul>
+                        <button class="btn-filled" style="margin-top: 20px;">View Requirements</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="main-footer">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>AgriSolutions Hub</h3>
+                    <p>Global agricultural trade platform connecting buyers and sellers worldwide.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>Trade Links</h3>
+                    <ul>
+                        <li><a href="#">Post Buy Requirement</a></li>
+                        <li><a href="#">List Products</a></li>
+                        <li><a href="#">Trade Leads</a></li>
+                        <li><a href="#">Export Guides</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact Trade Desk</h3>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> +255 748 550 225</li>
+                        <li><i class="fas fa-envelope"></i> trade@agrisolutionshub.com</li>
+                        <li><i class="fas fa-map-marker"></i> SUA Morogoro</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>© 2024 AgriSolutions Hub. Project by David Bablo Mushii (DIT/E/2024/0021)</p>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            document.getElementById('sideNav').classList.toggle('active');
+        });
+
+        document.addEventListener('click', function(event) {
+            const sideNav = document.getElementById('sideNav');
+            const mobileBtn = document.getElementById('mobileMenuBtn');
+            
+            if (window.innerWidth <= 992 && 
+                !sideNav.contains(event.target) && 
+                !mobileBtn.contains(event.target) && 
+                sideNav.classList.contains('active')) {
+                sideNav.classList.remove('active');
+            }
+        });
+
+        window.switchTab = function(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tab + '-tab').classList.add('active');
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.order-card, .product-card, .opportunity-card').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
